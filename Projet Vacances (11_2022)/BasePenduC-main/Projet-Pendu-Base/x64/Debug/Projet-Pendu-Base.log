@@ -1,0 +1,5 @@
+﻿  main.c
+c:\users\user\desktop\basependuc-main\projet-pendu-base\main.c(43): warning C4476: 'printf' : caractère de champ de type ']' inconnu dans le spécificateur de format
+c:\users\user\desktop\basependuc-main\projet-pendu-base\main.c(86): warning C4267: '=' : conversion de 'size_t' en 'int', perte possible de données
+c:\users\user\desktop\basependuc-main\projet-pendu-base\main.c(23): warning C4101: 'c' : variable locale non référencée
+  Projet-Pendu-Base.vcxproj -> C:\Users\User\Desktop\BasePenduC-main\x64\Debug\Projet-Pendu-Base.exe
