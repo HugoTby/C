@@ -8,11 +8,23 @@
 #include <math.h>
 
 
+void affiche(int *t) {
 
-int main(int argc, char *argv[])
-{
-  
-	?
+	int i;
 
-
+	for (i = 0; i < 10; i++) {
+		printf("la position de %d est : %d\n", t[i], i + 1);
+	}
 }
+
+
+int main(int argc, char ** argv)
+{
+	int tab[100] = { 1,2,4,8,16,32,64,128,256,512 };
+	affiche(tab);
+
+	return 0;
+}
+
+
+
