@@ -34,6 +34,47 @@ void closeFile(FILE* file) {
 
 int main(int argc, char ** argv)
 {
+	FILE* file = fopen("./source.txt", "r");
+	FILE* dest1File = fopen("./dest1.txt", "r");
+	FILE* destFile = fopen("./dest2.txt", "w");
+
+	if (file == NULL || destFile == NULL || dest1File == NULL)
+	{
+		printf("L'ouverture du fichier %c %cchou%ce\n", 133, 130, 130);
+		if (file != NULL) fclose(file);
+		if (destFile != NULL) fclose(destFile);
+		if (dest1File != NULL) fclose(dest1File);
+	}
+	else
+	{
+		//Réussite à l'ouverture du fichier :
+		char c;
+		do
+		{
+
+			c = (char)getc(file);
+			printf("%c", c);
+			if (c != EOF && c != 'a') // [...] && ignore la lettre 'a' en copiant le fichier source.txt dans dest2.txt
+			{
+				putc(c, destFile);
+			}
+
+		} while (c != EOF);
+		printf("\n");
+
+		printf("Taille fichier source : %ld octets\n", getFileSize(file));
+		printf("Taille fichier dest1 : %ld octets\n", getFileSize(dest1File));
+		printf("Taille fichier dest2 : %ld octets\n", getFileSize(destFile));
+
+
+		closeFile(destFile);
+		closeFile(dest1File);
+		closeFile(file);
+
+	}
+
+	return 0;
+}
 	
 	
 	////////////////////////////////////////////////////////////////////////
@@ -100,44 +141,4 @@ int main(int argc, char ** argv)
 
 	return 0;
 }
-	FILE* file = fopen("./source.txt", "r");
-	FILE* dest1File = fopen("./dest1.txt", "r");
-	FILE* destFile = fopen("./dest2.txt", "w");
 
-	if (file == NULL || destFile == NULL || dest1File == NULL)
-	{
-		printf("L'ouverture du fichier %c %cchou%ce\n", 133, 130, 130);
-		if (file != NULL) fclose(file);
-		if (destFile != NULL) fclose(destFile);
-		if (dest1File != NULL) fclose(dest1File);
-	}
-	else
-	{
-		//Réussite à l'ouverture du fichier :
-		char c;
-		do
-		{
-
-			c = (char)getc(file);
-			printf("%c", c);
-			if (c != EOF && c != 'a') // [...] && ignore la lettre 'a' en copiant le fichier source.txt dans dest2.txt
-			{
-				putc(c, destFile);
-			}
-
-		} while (c != EOF);
-		printf("\n");
-
-		printf("Taille fichier source : %ld octets\n", getFileSize(file));
-		printf("Taille fichier dest1 : %ld octets\n", getFileSize(dest1File));
-		printf("Taille fichier dest2 : %ld octets\n", getFileSize(destFile));
-
-
-		closeFile(destFile);
-		closeFile(dest1File);
-		closeFile(file);
-
-	}
-
-	return 0;
-}
