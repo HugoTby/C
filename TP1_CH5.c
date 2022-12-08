@@ -142,3 +142,71 @@ int main(int argc, char ** argv)
 	return 0;
 }
 
+////////////////////////////////////////////////////////////////////////
+//EX 2 SUPPLÉMENTAIRES
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+#include <conio.h>
+#include <math.h>
+#include <iostream>
+
+long getFileSize(FILE* file)
+{
+	long position = ftell(file);
+	fseek(file, 0L, SEEK_END);
+	long result = ftell(file);
+	fseek(file, position, SEEK_SET);
+	return result;
+
+}
+
+
+void closeFile(FILE* file) {
+
+	//On vérifie si le fichier est bien fermé ou non
+	if (fclose(file) == 0)
+	{
+		printf("Fermeture reussie\n");
+	}
+	else
+	{
+		printf("Echec de fermeture du fichier\n");
+	}
+
+}
+
+int main(int argc, char ** argv)
+{
+	FILE* fichiercontenu = fopen("./fichiercontenu.txt", "r");
+
+	if (fichiercontenu == NULL)
+	{
+		printf("L'ouverture du fichier %c %cchou%ce\n", 133, 130, 130);
+		if (fichiercontenu != NULL) fclose(fichiercontenu);
+	}
+	else
+	{
+		//Réussite à l'ouverture du fichier :
+
+
+		/*int fscanf(FILE *fichiercontenu, char *format, );
+
+		fscanf(fichier, "%d", &nb);*/
+
+
+
+
+		printf("\n");
+
+		printf("Taille fichiercontenu : %ld octets\n", getFileSize(fichiercontenu));
+
+		closeFile(fichiercontenu);
+
+	}
+
+	return 0;
+}
