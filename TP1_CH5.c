@@ -190,13 +190,21 @@ int main(int argc, char ** argv)
 	}
 	else
 	{
+		char c;
+
 		//Réussite à l'ouverture du fichier :
 
+		do
+		{
+			c = getc(fichiercontenu);
+			if (c != EOF)
+			{
+				printf("%c", c);
+			}
 
-		/*int fscanf(FILE *fichiercontenu, char *format, );
+		} while (c != EOF);
 
-		fscanf(fichier, "%d", &nb);*/
-
+		
 
 
 
