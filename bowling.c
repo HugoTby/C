@@ -1,4 +1,4 @@
-//ex0301
+//Hugo TABARY, 29/12/2022
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
