@@ -8,14 +8,13 @@
 
 typedef struct
 {
-	char name[50];
+	int points;
 	int numJoueur;
+	char name[50];
 	int lancerNum1[10];
 	int lancerNum2[10];
 	int lancerBonus[1];
-	int points;
 	int SauvegardePoints[10];
-
 } Bowling;
 
 int saisieJoueurs(Bowling ** Players);
@@ -57,7 +56,11 @@ int main(int argc, char ** argv)
 			// (Fonction de jeu ----------------------------------------)
 			system("CLS");
 
+			// Alors on va lancer la saisie des Joueurs
 			int nbJoueur = saisieJoueurs(&Joueurs);
+
+			// Ensuite on lancer la partie de bowling
+			structureJeu(&Joueurs, nbJoueur);
 
 			// (Fonction de jeu ----------------------------------------)
 		}
@@ -292,7 +295,7 @@ void structureJeu(Bowling ** Players, int nbPlayer)
 				
 			}
 			(*Players)[i].SauvegardePoints[nbLancer - 1] = (*Players)[i].points; // point du tour
-			affichageScore(*Players, nbPlayer, nbLancer);
+			score(*Players, nbPlayer, nbLancer);
 		}
 
 	} while (nbLancer < 10);
@@ -379,5 +382,74 @@ int calculDesPoints(Bowling ** Players, int numJoueur, int nbTours, int numCoups
 	{
 		printf("\n\n\n\tnumCoups = %d\n", numCoups);
 		return rand() % 11; // rand quilles 0 -> 10
+	}
+}
+
+
+void score(Bowling * Players, int nbJoueur, int nbTours)
+{
+	printf("\n\n\n\tVoici le tableau des scores :\n\n");
+
+	for (int i = 0; i < nbJoueur; i++)
+	{
+		if (Players[i].lancerNum1[nbTours - 1] > -1 && Players[i].lancerNum1[nbTours - 1] <= 10) // si le joueur a jouer au bowling
+		{
+			printf("\t| %s |", Players[i].name); //joueur
+			for (int j = 0; j < nbTours; j++)
+			{
+				if (Players[i].lancerNum1[j] > -1 && Players[i].lancerNum1[j] <= 30) //si le joueur a jouer
+				{
+					if (Players[i].lancerNum1[j] >= 10) // si le premier coup était un strike
+					{
+						if (j == 9) // si c'est le 10eme tour
+						{
+							if (Players[i].lancerNum2[j] == 10 && Players[i].lancerBonus[0] == 10)
+							{
+								printf("\n\t Tour %d: X X X (%d)", j + 1, Players[i].SauvegardePoints[j]);
+							}
+							else if (Players[i].lancerNum2[j] == 10 && Players[i].lancerBonus[0] != 10)
+							{
+								printf("\n\t Tour %d: X X %d (%d)", j + 1, Players[i].lancerBonus[0], Players[i].SauvegardePoints[j]);
+							}
+							else if (Players[i].lancerNum2[j] != 10 && Players[i].lancerBonus[0] == 10)
+							{
+								printf("\n\t Tour %d: X %d X (%d)", j + 1, Players[i].lancerNum2[j], Players[i].SauvegardePoints[j]);
+							}
+							else
+							{
+								printf("\n\t Tour %d: X %d %d (%d)", j + 1, Players[i].lancerNum2[j], Players[i].lancerBonus[0], Players[i].SauvegardePoints[j]);
+							}
+						}
+						else // sinon
+						{
+							printf("\n\t Tour %d: X ", j + 1);
+						}
+					}
+					else if (Players[i].lancerNum1[j] + Players[i].lancerNum2[j] >= 10) // si le 2eme lancer est un spare
+					{
+						if (j == 9) // si c'est le 10eme tour
+						{
+							if (Players[i].lancerBonus[0] == 10)
+							{
+								printf("\n\t Tour %d: %d / X (%d)", j + 1, Players[i].lancerNum1[j], Players[i].SauvegardePoints[j]);
+							}
+							else
+							{
+								printf("\n\t Tour %d: %d / %d (%d)", j + 1, Players[i].lancerNum1[j], Players[i].lancerBonus[0], Players[i].SauvegardePoints[j]);
+							}
+						}
+						else // sinon
+						{
+							printf("\n\t Tour %d: %d / ", j + 1, Players[i].lancerNum1[j]);
+						}
+					}
+					else // si pas de spare ou pas de strike
+					{
+						printf("\n\t Tour %d: %d %d (%d)", j + 1, Players[i].lancerNum1[j], Players[i].lancerNum2[j], Players[i].SauvegardePoints[j]);
+					}
+				}
+			}
+		}
+		//printf("\n\t");
 	}
 }
