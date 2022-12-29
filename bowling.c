@@ -4,22 +4,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <Windows.h>
+#include <time.h>
 
 typedef struct
 {
 	char name[50];
 	int numJoueur;
-
-	int coup1[10];
-	int coup2[10];
-	int coup3Bonus[1];
-
+	int lancerNum1[10];
+	int lancerNum2[10];
+	int lancerBonus[1];
 	int points;
-	int SavePoints[10];
+	int SauvegardePoints[10];
 
 } Bowling;
 
 int saisieJoueurs(Bowling ** Players);
+void structureJeu(Bowling ** Players, int nbPlayer);
+int calculDesPoints(Bowling ** Players, int numJoueur, int nbTours, int numCoups, int *lancerBonus);
+void score(Bowling * Players, int nbJoueur, int nbTours);
 void continuer();
 
 
@@ -104,7 +106,6 @@ void continuer()
 	printf("\n\n\n\tChargement en cours, veuillez patienter...\n\n\n");
 	Sleep(5000);
 }
-
 
 
 
@@ -208,4 +209,175 @@ int saisieJoueurs(Bowling ** Players)
 
 	return nbJoueur;
 
+}
+
+void structureJeu(Bowling ** Players, int nbPlayer)
+{
+
+	int nbLancer = 0, LancerBonus = 0;
+
+	do
+	{
+		nbLancer++;
+
+		for (int i = 0; i < nbPlayer; i++)
+		{
+			int tableauDuScore[2];
+			LancerBonus = 0;
+
+			for (int k = 0; k < 2; k++)
+			{
+				printf("\n\n\n\tLe %d %cme tour est en cours pour : %s\n", nbLancer, 138, (*Players)[i].name);
+				printf("\tPour lancer la %d %cme boule de bowling, saisissez le symbole [@]\n", k + 1, 138);
+
+				while (_getch() != 64)
+				{
+					printf("\n\n\n\tVeuillez saisir le symbole [@] pour lancer la boule %d \n", k + 1);
+				}
+
+				tableauDuScore[k] = calculDesPoints(Players, i, nbLancer - 1, k + 1, &LancerBonus);
+
+				if (tableauDuScore[0] == 10) // -> donc en cas de strike
+				{
+					(*Players)[i].points += tableauDuScore[0];
+
+					if (nbLancer == 10)
+					{
+						printf("\n\n\n\tVous disposez de deux lancers suppl%cmentaires pour avoir r%calis%c un strike ! bravo !!\n", 130, 130, 130);
+						for (int b = 0; b < 2; b++)
+						{
+							printf("\n\n\n\tLe %d %cme tour est en cours pour : %s\n", nbLancer, 138, (*Players)[i].name);
+							printf("\tPour lancer la %d %cme boule (bonus) de bowling, saisissez le symbole [@]\n", b + 1, 138);
+
+							while (_getch() != 64)
+							{
+								printf("\n\n\n\tVeuillez saisir le symbole [@] pour lancer la boule %d \n", k + 1);
+							}
+							if (b == 0) 
+							{
+								tableauDuScore[1] = calculDesPoints(Players, i, nbLancer - 1, b + 2, &LancerBonus); // 1er lancer
+							}
+							else 
+							{
+								(*Players)[i].lancerBonus[0] = calculDesPoints(Players, i, nbLancer - 1, b + 2, &LancerBonus); // 2eme lancer
+							}
+						}
+							(*Players)[i].points += tableauDuScore[1] + (*Players)[i].lancerBonus[0];
+					}
+					break;
+				}
+				else if (k == 1 && tableauDuScore[0] + tableauDuScore[1] == 10) // -> donc en cas de spare
+				{
+					if (nbLancer == 10)
+					{
+						printf("\n\n\n\tVous disposez d%cun lancers suppl%cmentaires pour avoir r%calis%c un spare ! bravo !!\n", 39, 130, 130, 130);
+
+						printf("\n\n\n\tLe %d %cme tour est en cours pour : %s\n", nbLancer, 138, (*Players)[i].name);
+						printf("\tPour lancer la boule (bonus) de bowling, saisissez le symbole [@]\n");
+
+						while (_getch() != 64)
+						{
+							printf("\n\n\n\tVeuillez saisir le symbole [@] pour lancer la boule %d \n", k + 1);
+						}
+
+						(*Players)[i].lancerBonus[0] = calculDesPoints(Players, i, nbLancer - 1, k + 2, &LancerBonus); // 1er et unique lancer
+						(*Players)[i].points += tableauDuScore[1] + (*Players)[i].lancerBonus[0]; // affichage du point bonus
+					}
+					break;
+				}
+				else //Si le joueur ne fait ni de spare, ni de strike
+				{
+					(*Players)[i].points += tableauDuScore[k];
+				}
+				
+			}
+			(*Players)[i].SauvegardePoints[nbLancer - 1] = (*Players)[i].points; // point du tour
+			affichageScore(*Players, nbPlayer, nbLancer);
+		}
+
+	} while (nbLancer < 10);
+
+}
+
+
+int calculDesPoints(Bowling ** Players, int numJoueur, int nbTours, int numCoups, int *lancerBonus)
+{
+	int resultatCoups[2], max = 0;
+	srand(time(NULL));
+
+	if (numCoups == 1)
+	{
+		(*Players)[numJoueur].lancerNum1[nbTours] = rand() % 11; // faire tomber les quilles 0 -> 10
+		resultatCoups[0] = (*Players)[numJoueur].lancerNum1[nbTours];
+
+		if (*lancerBonus != 1 && nbTours > 0 && (*Players)[numJoueur].lancerNum1[nbTours - 1] + (*Players)[numJoueur].lancerNum2[nbTours - 1] == 10)// en cas de spare au lancer précédent
+		{
+			if ((*Players)[numJoueur].lancerNum1[nbTours - 1] != 10) // Si le joueur n'a pas fait de strike
+			{
+				(*Players)[numJoueur].lancerNum2[nbTours - 1] += resultatCoups[0]; // Ajout du premier coup pour le tour suivant
+				(*Players)[numJoueur].points += (*Players)[numJoueur].lancerNum2[nbTours - 1]; 
+				*lancerBonus = 1;
+			}
+		}
+
+		if (*lancerBonus != 1 && nbTours > 1 && (*Players)[numJoueur].lancerNum1[nbTours - 2] == 10) // un strike deux tours avant
+		{
+			if ((*Players)[numJoueur].lancerNum1[nbTours - 1] == 10) // un strike le tour avant
+			{
+				if (resultatCoups[0] == 10) // en cas de strike
+				{
+					(*Players)[numJoueur].lancerNum1[nbTours - 2] += 10 + 10; // 3 strike à la suite -> = 30 points
+					(*Players)[numJoueur].points += (*Players)[numJoueur].lancerNum1[nbTours - 2] - 10; 
+				}
+				else 
+				{
+					(*Players)[numJoueur].lancerNum1[nbTours - 2] += 10 + resultatCoups[0];  
+					(*Players)[numJoueur].points += (*Players)[numJoueur].lancerNum1[nbTours - 2] - 10; 
+				}
+			}
+		}
+
+		if (resultatCoups[0] == 10 && nbTours != 9) // en cas de strike a un tour different de 10
+		{
+			(*Players)[numJoueur].lancerNum2[nbTours] = NULL; 
+		}
+
+		return resultatCoups[0];
+
+	}
+	else if (numCoups == 2) // si 2eme lancer
+	{
+		if (nbTours == 9 && (*Players)[numJoueur].lancerNum1[nbTours] == 10) // Si tour =x 10 et strike = 0
+		{
+			(*Players)[numJoueur].lancerNum2[nbTours] = rand() % 11; // rand quilles 0 -> 10
+			resultatCoups[1] = (*Players)[numJoueur].lancerNum2[nbTours]; // score au 2eme lancer
+		}
+		else // Si tour = 10 et strike = 1
+		{
+			max = 10 - (*Players)[numJoueur].lancerNum1[nbTours]; // combien de quilles sont encore debout
+
+			(*Players)[numJoueur].lancerNum2[nbTours] = rand() % ++max; // rand quilles restantes
+			resultatCoups[1] = (*Players)[numJoueur].lancerNum2[nbTours]; // score au 2eme lancer
+		}
+		if (*lancerBonus != 1 && nbTours > 0 && (*Players)[numJoueur].lancerNum1[nbTours - 1] == 10) // en cas de strike précédent
+		{
+			(*Players)[numJoueur].lancerNum1[nbTours - 1] += (*Players)[numJoueur].lancerNum1[nbTours] + resultatCoups[1]; // 2 coups suivant dans le strike précédent
+			if (nbTours != 9)
+			{
+				(*Players)[numJoueur].points += (*Players)[numJoueur].lancerNum1[nbTours - 1] - 10; 
+
+			}
+			else
+			{
+				(*Players)[numJoueur].points += (*Players)[numJoueur].lancerNum1[nbTours - 1] - 10 + resultatCoups[1]; 
+			}
+			*lancerBonus = 1;
+		}
+		return resultatCoups[1]; // Lancer no2
+	}
+	else if (numCoups == 3) // si bonus au 10 eme tour
+	{
+		printf("\n\n\n\tnumCoups = %d\n", numCoups);
+		return rand() % 11; // rand quilles 0 -> 10
+	}
 }
