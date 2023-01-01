@@ -1,4 +1,4 @@
-//Hugo TABARY, 29/12/2022
+//ex0301
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
@@ -67,7 +67,20 @@ int main(int argc, char ** argv)
 		else if (nbChoisi == 2)
 		{
 			system("CLS");
-			printf("Le nombre choisi est 2");//test
+
+			printf("\n\n\tVoici les differentes informations sur le bowling !\n\n");
+
+			printf("\n\n\tChaque partie comprend 10 jeux ou frames. Les participants jouent chacun leur tour. Le joueur lance\n");
+			printf("\tau maximum 2 boules a chaque jeu et marque le nombre de points correspondant au nombre de\n");
+			printf("\tquilles tombees.\n\n");
+
+			printf("\n\n\tSi les 10 quilles tombent en deux lancers, le joueur a fait un spare; il marque 10 points plus les points\n");
+			printf("\tdu lancer suivant. Si les 10 quilles tombent au premier lancer, le joueur a fait un strike; Il marque 10\n");
+			printf("\tpoints plus les points des 2 lances suivants. Au dixieme jeu, si le joueur realise un spare ou un strike, il\n");
+			printf("\tbeneficie de 1 ou 2 lancer(s) supplementaire(s).\n\n");
+
+			printf("\n\n\tCompte tenu de ces bonifications, le maximum de points par partie est de 300.\n");
+
 		}
 		else if (nbChoisi == 3)
 		{
@@ -193,12 +206,12 @@ int saisieJoueurs(Bowling ** Players)
 			{
 				if (nbJoueur == 1)
 				{
-					printf("\nNous vous souhaitons une bonne partie !");
+					printf("\n\tNous vous souhaitons une bonne partie !");
 					break;
 				}
 				else
 				{
-					printf("\nNous souhaitons une bonne partie %c tout les joueurs !", 133);
+					printf("\n\tNous souhaitons une bonne partie %c tout les joueurs !", 133);
 					break;
 				}
 			}
@@ -250,7 +263,7 @@ void structureJeu(Bowling ** Players, int nbPlayer)
 						for (int b = 0; b < 2; b++)
 						{
 							printf("\n\n\n\tLe %d %cme tour est en cours pour : %s\n", nbLancer, 138, (*Players)[i].name);
-							printf("\tPour lancer la %d %cme boule (bonus) de bowling, saisissez le symbole [@]\n", b + 1, 138);
+							printf("\tPour lancer la %d boule (bonus) de bowling, saisissez le symbole [@]\n", b + 1);
 
 							while (_getch() != 64)
 							{
@@ -275,7 +288,7 @@ void structureJeu(Bowling ** Players, int nbPlayer)
 					{
 						printf("\n\n\n\tVous disposez d%cun lancers suppl%cmentaires pour avoir r%calis%c un spare ! bravo !!\n", 39, 130, 130, 130);
 
-						printf("\n\n\n\tLe %d %cme tour est en cours pour : %s\n", nbLancer, 138, (*Players)[i].name);
+						printf("\n\n\n\tLe %d tour est en cours pour : %s\n", nbLancer, (*Players)[i].name);
 						printf("\tPour lancer la boule (bonus) de bowling, saisissez le symbole [@]\n");
 
 						while (_getch() != 64)
@@ -394,7 +407,7 @@ void score(Bowling * Players, int nbJoueur, int nbTours)
 	{
 		if (Players[i].lancerNum1[nbTours - 1] > -1 && Players[i].lancerNum1[nbTours - 1] <= 10) // si le joueur a jouer au bowling
 		{
-			printf("\t| %s |", Players[i].name); //joueur
+			printf("\n\n\n\t| %s              ", Players[i].name); //joueur
 			for (int j = 0; j < nbTours; j++)
 			{
 				if (Players[i].lancerNum1[j] > -1 && Players[i].lancerNum1[j] <= 30) //si le joueur a jouer
@@ -405,24 +418,24 @@ void score(Bowling * Players, int nbJoueur, int nbTours)
 						{
 							if (Players[i].lancerNum2[j] == 10 && Players[i].lancerBonus[0] == 10)
 							{
-								printf("\n\t Tour %d: X X X (%d)", j + 1, Players[i].SauvegardePoints[j]);
+								printf("\n\t| Tour %d: X X X (%d)   ", j + 1, Players[i].SauvegardePoints[j]);
 							}
 							else if (Players[i].lancerNum2[j] == 10 && Players[i].lancerBonus[0] != 10)
 							{
-								printf("\n\t Tour %d: X X %d (%d)", j + 1, Players[i].lancerBonus[0], Players[i].SauvegardePoints[j]);
+								printf("\n\t| Tour %d: X X %d (%d)   ", j + 1, Players[i].lancerBonus[0], Players[i].SauvegardePoints[j]);
 							}
 							else if (Players[i].lancerNum2[j] != 10 && Players[i].lancerBonus[0] == 10)
 							{
-								printf("\n\t Tour %d: X %d X (%d)", j + 1, Players[i].lancerNum2[j], Players[i].SauvegardePoints[j]);
+								printf("\n\t| Tour %d: X %d X (%d)   ", j + 1, Players[i].lancerNum2[j], Players[i].SauvegardePoints[j]);
 							}
 							else
 							{
-								printf("\n\t Tour %d: X %d %d (%d)", j + 1, Players[i].lancerNum2[j], Players[i].lancerBonus[0], Players[i].SauvegardePoints[j]);
+								printf("\n\t| Tour %d: X %d %d (%d)   ", j + 1, Players[i].lancerNum2[j], Players[i].lancerBonus[0], Players[i].SauvegardePoints[j]);
 							}
 						}
 						else // sinon
 						{
-							printf("\n\t Tour %d: X ", j + 1);
+							printf("\n\t| Tour %d: X    ", j + 1);
 						}
 					}
 					else if (Players[i].lancerNum1[j] + Players[i].lancerNum2[j] >= 10) // si le 2eme lancer est un spare
@@ -431,21 +444,21 @@ void score(Bowling * Players, int nbJoueur, int nbTours)
 						{
 							if (Players[i].lancerBonus[0] == 10)
 							{
-								printf("\n\t Tour %d: %d / X (%d)", j + 1, Players[i].lancerNum1[j], Players[i].SauvegardePoints[j]);
+								printf("\n\t| Tour %d: %d / X (%d)   ", j + 1, Players[i].lancerNum1[j], Players[i].SauvegardePoints[j]);
 							}
 							else
 							{
-								printf("\n\t Tour %d: %d / %d (%d)", j + 1, Players[i].lancerNum1[j], Players[i].lancerBonus[0], Players[i].SauvegardePoints[j]);
+								printf("\n\t| Tour %d: %d / %d (%d)   ", j + 1, Players[i].lancerNum1[j], Players[i].lancerBonus[0], Players[i].SauvegardePoints[j]);
 							}
 						}
 						else // sinon
 						{
-							printf("\n\t Tour %d: %d / ", j + 1, Players[i].lancerNum1[j]);
+							printf("\n\t| Tour %d: %d /    ", j + 1, Players[i].lancerNum1[j]);
 						}
 					}
 					else // si pas de spare ou pas de strike
 					{
-						printf("\n\t Tour %d: %d %d (%d)", j + 1, Players[i].lancerNum1[j], Players[i].lancerNum2[j], Players[i].SauvegardePoints[j]);
+						printf("\n\t| Tour %d: %d %d (%d)", j + 1, Players[i].lancerNum1[j], Players[i].lancerNum2[j], Players[i].SauvegardePoints[j]);
 					}
 				}
 			}
